@@ -1,0 +1,60 @@
+{% extends 'user/dashboard.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="content-wrapper">
+    <div class="container-fluid flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4  mx-3"><span class="text-muted fw-light">{{ breadcrumb.1 }} /</span> {{ breadcrumb.2 }}
+        </h4>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Input Sizing -->
+                <div class="card mb-4">
+                    <h5 class="card-header">{{page_label}}</h5>
+                    <div class="card-body">
+                        {% if form %}
+                        <form method='POST' enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form }}
+
+                            <div class="my-5 d-flex justify-content-center">
+                                <button class="btn btn-primary d-grid w-50" type="submit">Create Account</button>
+                            </div>
+                        </form>
+                        <a href="{% url 'login' %}">
+                            <p class="d-inline-block  rounded text-primary fw-semi-bold py-1 px-3">if Alreadfy have
+                                acoount?
+                                Login here</p>
+                        </a>
+                        <p>Date: <input type="text" id="datepicker"></p>
+
+                        <!-- /form -->
+                        {% else %}
+                        <p class="mb-4">Form is not available</p>
+                        {% endif %}
+                     
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- / Content -->
+
+<!-- Include jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include jQuery UI library -->
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+
+<!-- Initialize the date picker -->
+<script>
+    $(function() {
+    $('.datepicker').datepicker();
+    });
+</script>
+
+{% endblock %}

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap_datepicker_plus',
 ]
 
 MIDDLEWARE = [
@@ -169,3 +170,6 @@ from django.contrib.messages import constants as messages
 #         messages.ERROR: 'danger',
 #  }
 
+DATE_INPUT_FORMATS = [
+    '%Y-%m-%d',  # Default format
+]

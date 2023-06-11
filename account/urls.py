@@ -13,6 +13,11 @@ urlpatterns = [
     # dashboard 
     path('dashboard', views.UserDashBoardView.as_view(), name = 'user_dashboard'),
     path("profile-view", views.ProfileView.as_view(), name="profile_view"),
+
+    # manage member 
+    path("member-manage", views.MemberListView.as_view(), name="member_manage"),
+
+    
     
 
 

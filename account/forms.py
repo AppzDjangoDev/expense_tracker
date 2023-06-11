@@ -34,5 +34,13 @@ class UserRegisterForm(forms.Form):
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control m-1'
 
+class UserprofileUpdate(forms.ModelForm):
+    # specify the name of model to use
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "username" ,  "email" ]
 
-    
+    def __init__(self, *args, **kwargs):
+        super(UserprofileUpdate, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control m-1'

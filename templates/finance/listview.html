@@ -1,0 +1,84 @@
+{% extends  'user/dashboard.html' %} 
+{% load static %}
+{% block content %}
+
+
+<div class="container-fluid flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3 mb-4  mx-3"><span class="text-muted fw-light">{{ breadcrumb.1 }} /</span> {{ breadcrumb.2 }} </h4>
+
+  <div class="row">
+    <div class="col-md-12">
+      <!-- Hoverable Table rows -->
+      <div class="card">
+        <h5 class="card-header">Budget Log</h5>
+        <div class="table-responsive text-nowrap">
+          <table class="table table-hover " style="margin-bottom: 200px;">
+            <thead>
+              <tr>
+                <th class="mr-3">#</th>
+                {% for object in headerlist %}
+                
+                <th>{{object}}</th>
+                
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              <tr>
+                {% for object in object_list %}
+                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{ forloop.counter }}</strong></td>
+                {% if object.name %}
+                <td>{{object.name}}</td>
+                {% endif %}
+                {% if object.category %}
+                <td>{{object.category}}</td>
+                {% endif %}
+                {% if object.start_date %}
+                <td>{{object.start_date}}</td>
+                {% endif %}
+                {% if object.description %}
+                <td>{{object.description}}</td>
+                {% endif %}
+                {% if object.budget %}
+                <td>{{object.budget}}</td>
+                {% endif %}
+                {% if object.end_date %}
+                <td>{{object.end_date}}</td>
+                {% endif %}
+                {% if object.amount %}
+                <td>{{object.amount}}</td>
+                {% endif %}
+                {% if object.user %}
+                <td>{{object.user}}</td>
+                {% endif %}
+                {% if object.total_amount %}
+                <td>{{object.total_amount}}</td>
+                {% endif %}
+                {% if object.date %}
+                <td>{{object.date}}</td>
+                {% endif %}
+                {% if object.categorytype %}
+                <td>{{object.categorytype}}</td>
+                {% endif %}
+
+
+                
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!--/ Hoverable Table rows -->
+    </div>
+  </div>
+</div>
+<!-- / Content -->
+
+
+
+
+{% endblock %}
+
+
+

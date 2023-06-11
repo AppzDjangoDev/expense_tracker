@@ -49,9 +49,7 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="{% static 'assets/js/config.js' %}"></script>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
-
+    {% comment %} <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> {% endcomment %}
 
     <!-- toast -->
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -60,10 +58,18 @@
     <!-- In html add this just before end of body tag -->
     <script src="{% static 'js/toastr.js' %}" type="text/javascript"></script>
 
+
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
+
+
+
   </head>
 
-  <body>
-    
+  <body>    
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
@@ -146,68 +152,66 @@
               </a>
             </li>
 
-            <!-- Layouts -->
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-layout"></i>
-                <div data-i18n="Layouts">Layouts</div>
-              </a>
-
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="layouts-without-menu.html" class="menu-link">
-                    <div data-i18n="Without menu">Without menu</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="layouts-without-navbar.html" class="menu-link">
-                    <div data-i18n="Without navbar">Without navbar</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="layouts-container.html" class="menu-link">
-                    <div data-i18n="Container">Container</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="layouts-fluid.html" class="menu-link">
-                    <div data-i18n="Fluid">Fluid</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="layouts-blank.html" class="menu-link">
-                    <div data-i18n="Blank">Blank</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
+           
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Finance Management</span>
             </li>
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                <div data-i18n="Account Settings">Create Budget</div>
+                <div data-i18n="Account Settings">Set Financial goals</div>
               </a>
               <ul class="menu-sub">
+                {% if modalcontent %}
                 <li class="menu-item">
-                  <a href="{% url 'profile_view' %}" class="menu-link">
-                    <div data-i18n="Account">Account</div>
+                  <a href="{% url 'add_budget' %}"  class="menu-link">
+                    <div data-i18n="Account">Add Budget</div>
+                  </a>
+                </li>
+                {% else %}
+                <li class="menu-item">
+                  <a href="{% url 'add_budget' %}" onclick="return false;"  class="menu-link">
+                    <div data-i18n="Account"  type="button" style="color: lightgray" data-bs-toggle="modal" data-bs-target="#modalToggle" >Add Budget</div >
+                  </a>
+                </li>
+                {% endif %}
+                <li class="menu-item">
+                  <a href="{% url 'add_category' %}" class="menu-link">
+                    <div data-i18n="Notifications">Add Category</div>
                   </a>
                 </li>
                 <li class="menu-item">
-                  <a href="#" class="menu-link">
-                    <div data-i18n="Notifications">Notifications</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="menu-link">
-                    <div data-i18n="Connections">Connections</div>
+                  <a href="{% url 'add_transaction' %}" class="menu-link">
+                    <div data-i18n="Connections">Add Transaction</div>
                   </a>
                 </li>
               </ul>
             </li>
+
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-dock-top"></i>
+                <div data-i18n="Account Settings">Manage Finance</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="{% url 'budget_list' %}" class="menu-link">
+                    <div data-i18n="Account">Budget Log</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'category_list' %}" class="menu-link">
+                    <div data-i18n="Notifications">Category Log</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'transaction_list' %}" class="menu-link">
+                    <div data-i18n="Connections">Transaction Log</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Pages</span>
             </li>
@@ -227,269 +231,17 @@
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                <div data-i18n="Account Settings">E commerce</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  {% comment %} <a href="{% url 'commerce_home' %}" class="menu-link"> {% endcomment %}
-                    <div data-i18n="Account">Shop</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-dock-top"></i>
                 <div data-i18n="Account Settings">User Management </div>
               </a>
               <ul class="menu-sub">
                 <li class="menu-item">
-                  {% comment %} <a href="{% url 'member_manage' slug='staff' %}" class="menu-link"> {% endcomment %}
-                    <div data-i18n="Account">Manage Staffs</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  {% comment %} <a href="{% url 'member_manage' slug='member' %}" class="menu-link"> {% endcomment %}
+                  <a href="{% url 'member_manage' %}" class="menu-link">
                     <div data-i18n="Account">Manage Members </div>
                   </a>
                 </li>
-                <li class="menu-item">
-                  {% comment %} <a href="{% url 'member_manage' slug='customer' %}" class="menu-link"> {% endcomment %}
-                    <div data-i18n="Account">Manage Customers </div>
-                  </a>
-                </li>
-              
               </ul>
             </li>
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
-                <div data-i18n="Authentications">Authentications</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="auth-login-basic.html" class="menu-link" target="_blank">
-                    <div data-i18n="Basic">Login</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="auth-register-basic.html" class="menu-link" target="_blank">
-                    <div data-i18n="Basic">Register</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="auth-forgot-password-basic.html" class="menu-link" target="_blank">
-                    <div data-i18n="Basic">Forgot Password</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-cube-alt"></i>
-                <div data-i18n="Misc">Misc</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  {% comment %} <a href="{% url 'error' %}" class="menu-link"> {% endcomment %}
-                    <div data-i18n="Error">Error</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  {% comment %} <a href="{% url 'maintanance_view' %}" class="menu-link"> {% endcomment %}
-                    <div data-i18n="Under Maintenance">Under Maintenance</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Components -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
-            <!-- Cards -->
-            <li class="menu-item">
-              <a href="cards-basic.html" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Cards</div>
-              </a>
-            </li>
-            <!-- User interface -->
-            <li class="menu-item">
-              <a href="javascript:void(0)" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-box"></i>
-                <div data-i18n="User interface">User interface</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="ui-accordion.html" class="menu-link">
-                    <div data-i18n="Accordion">Accordion</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-alerts.html" class="menu-link">
-                    <div data-i18n="Alerts">Alerts</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-badges.html" class="menu-link">
-                    <div data-i18n="Badges">Badges</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-buttons.html" class="menu-link">
-                    <div data-i18n="Buttons">Buttons</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-carousel.html" class="menu-link">
-                    <div data-i18n="Carousel">Carousel</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-collapse.html" class="menu-link">
-                    <div data-i18n="Collapse">Collapse</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-dropdowns.html" class="menu-link">
-                    <div data-i18n="Dropdowns">Dropdowns</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-footer.html" class="menu-link">
-                    <div data-i18n="Footer">Footer</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-list-groups.html" class="menu-link">
-                    <div data-i18n="List Groups">List groups</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-modals.html" class="menu-link">
-                    <div data-i18n="Modals">Modals</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-navbar.html" class="menu-link">
-                    <div data-i18n="Navbar">Navbar</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-offcanvas.html" class="menu-link">
-                    <div data-i18n="Offcanvas">Offcanvas</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-pagination-breadcrumbs.html" class="menu-link">
-                    <div data-i18n="Pagination &amp; Breadcrumbs">Pagination &amp; Breadcrumbs</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-progress.html" class="menu-link">
-                    <div data-i18n="Progress">Progress</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-spinners.html" class="menu-link">
-                    <div data-i18n="Spinners">Spinners</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-tabs-pills.html" class="menu-link">
-                    <div data-i18n="Tabs &amp; Pills">Tabs &amp; Pills</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-toasts.html" class="menu-link">
-                    <div data-i18n="Toasts">Toasts</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-tooltips-popovers.html" class="menu-link">
-                    <div data-i18n="Tooltips & Popovers">Tooltips &amp; popovers</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="ui-typography.html" class="menu-link">
-                    <div data-i18n="Typography">Typography</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <!-- Extended components -->
-            <li class="menu-item">
-              <a href="javascript:void(0)" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-copy"></i>
-                <div data-i18n="Extended UI">Extended UI</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="extended-ui-perfect-scrollbar.html" class="menu-link">
-                    <div data-i18n="Perfect Scrollbar">Perfect scrollbar</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="extended-ui-text-divider.html" class="menu-link">
-                    <div data-i18n="Text Divider">Text Divider</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li class="menu-item">
-              <a href="icons-boxicons.html" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-crown"></i>
-                <div data-i18n="Boxicons">Boxicons</div>
-              </a>
-            </li>
-
-            <!-- Forms & Tables -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">Forms &amp; Tables</span></li>
-            <!-- Forms -->
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-detail"></i>
-                <div data-i18n="Form Elements">Form Elements</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="forms-basic-inputs.html" class="menu-link">
-                    <div data-i18n="Basic Inputs">Basic Inputs</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="forms-input-groups.html" class="menu-link">
-                    <div data-i18n="Input groups">Input groups</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="menu-item">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-detail"></i>
-                <div data-i18n="Form Layouts">Form Layouts</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item">
-                  <a href="form-layouts-vertical.html" class="menu-link">
-                    <div data-i18n="Vertical Form">Vertical Form</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a href="form-layouts-horizontal.html" class="menu-link">
-                    <div data-i18n="Horizontal Form">Horizontal Form</div>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Tables -->
-            <li class="menu-item">
-              <a href="tables-basic.html" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Tables">Tables</div>
-              </a>
-            </li>
-            <!-- Misc -->
+            
             <li class="menu-header small text-uppercase"><span class="menu-header-text">Misc</span></li>
             <li class="menu-item">
               <a
@@ -546,18 +298,7 @@
 
               <ul class="navbar-nav flex-row align-items-center ms-auto">
                 <!-- Place this tag where you want the button to render. -->
-                <li class="nav-item lh-1 me-3">
-                  <a
-                    class="github-button"
-                    href="https://github.com/themeselection/sneat-html-admin-template-free"
-                    data-icon="octicon-star"
-                    data-size="large"
-                    data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-                    >Star</a
-                  >
-                </li>
-
+              
                 <!-- User -->
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -589,31 +330,16 @@
                       <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                      {% comment %} <a class="dropdown-item" href="{% url 'profile_view' %}"> {% endcomment %}
+                      <a class="dropdown-item" href="{% url 'profile_view' %}">
                         <i class="bx bx-user me-2"></i>
                         <span class="align-middle">My Profile</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <i class="bx bx-cog me-2"></i>
-                        <span class="align-middle">Settings</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <span class="d-flex align-items-center align-middle">
-                          <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                          <span class="flex-grow-1 align-middle">Billing</span>
-                          <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-                        </span>
                       </a>
                     </li>
                     <li>
                       <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                      {% comment %} <a class="dropdown-item" href="{% url 'logout' %}"> {% endcomment %}
+                      <a class="dropdown-item" href="{% url 'logout' %}">
                         <i class="bx bx-power-off me-2"></i>
                         <span class="align-middle">Log Out</span>
                       </a>
@@ -625,6 +351,31 @@
             </div>
           </nav>
           <!-- / Navbar -->
+
+          <!-- / modal -->
+
+
+          {% if modalcontent %}
+          <!-- Modal 1-->
+          <div class="modal fade" id="modalToggle" aria-labelledby="modalToggleLabel" tabindex="-1" style="display: none"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalToggleLabel">{{modalcontent.title}}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">{{modalcontent.description}}</div>
+                <div class="modal-footer">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- modal end  -->
+          {% endif %}
+
+            
 
           <!-- In html add this to toast message start-->
          
@@ -660,7 +411,7 @@
                     <div class="d-flex align-items-end row">
                       <div class="col-sm-7">
                         <div class="card-body">
-                          <h5 class="card-title text-primary">Congratulations {{request.user}} ! 🎉</h5>
+                          <h5 class="card-title text-primary">Congratulations {{request.user.first_name}} ! 🎉</h5>
                           <p class="mb-4">
                             You have done <span class="fw-bold">72%</span> more sales today. Check your new badge in
                             your profile.
@@ -713,9 +464,15 @@
                               </div>
                             </div>
                           </div>
-                          <span class="fw-semibold d-block mb-1">Profit</span>
+                          {% if current_budget %}
+                          <span class="fw-semibold d-block mb-1">Income of {{current_budget.name}}-budget</span>
                           <h3 class="card-title mb-2">$12,628</h3>
                           <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
+                          {% elif previous_budget %}
+                          <span class="fw-semibold d-block mb-1">Income of budget : {{Previous.name}}</span>
+                          <h3 class="card-title mb-2">$12,628</h3>
+                          <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
+                          {% endif %}
                         </div>
                       </div>
                     </div>
@@ -747,9 +504,14 @@
                               </div>
                             </div>
                           </div>
-                          <span>Sales</span>
-                          <h3 class="card-title text-nowrap mb-1">$4,679</h3>
-                          <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +28.42%</small>
+                          <span class="fw-semibold d-block mb-1">{% if current_budget %}Current Budget : {% else %} Previous Budget:{% endif %} {{current_budget.name}}</span>
+                          {% if current_budget %}
+                          <h4 class="card-title text-nowrap mb-1">INR :{{current_budget.total_amount}} </h4>
+                          <small class="text-primary fw-semibold"></i> {{current_budget.start_date}} : {{current_budget.end_date}}</small>
+                          {% elif previous_budget %}
+                          <h4 class="card-title text-nowrap mb-1">INR :{{previous_budget.total_amount}} </h4>
+                          <small class="text-primary fw-semibold"></i> {{previous_budget.start_date}} : {{previous_budget.end_date}}</small>
+                          {% endif %}
                         </div>
                       </div>
                     </div>
@@ -839,9 +601,15 @@
                               </div>
                             </div>
                           </div>
-                          <span class="d-block mb-1">Payments</span>
-                          <h3 class="card-title text-nowrap mb-2">$2,456</h3>
-                          <small class="text-danger fw-semibold"><i class="bx bx-down-arrow-alt"></i> -14.82%</small>
+                          {% if current_budget %}
+                          <span class="fw-semibold d-block mb-1">Expense of {{current_budget.name}}-budget</span>
+                          <h3 class="card-title mb-2">$12,628</h3>
+                          <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
+                          {% elif previous_budget %}
+                          <span class="fw-semibold d-block mb-1">Expense of budget : {{Previous.name}}</span>
+                          <h3 class="card-title mb-2">$12,628</h3>
+                          <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
+                          {% endif %}
                         </div>
                       </div>
                     </div>
@@ -1262,5 +1030,7 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js' %}"></script>
+
+
   </body>
 </html>
