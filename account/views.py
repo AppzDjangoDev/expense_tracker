@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from account.forms import UserLoginForm, UserRegisterForm, UserprofileUpdate
+from account.forms import UserLoginForm, UserprofileUpdate
 from django.contrib import auth
 from django.views import View  
 from django.contrib.auth import logout
@@ -11,11 +11,9 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.list import ListView
 from datetime import datetime
 from django.db.models import Sum
-
-
-
-
-
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+from .forms import CustomUserCreationForm
 
 # Create your views here.
 class UserloginView(View):
@@ -72,64 +70,62 @@ def homePage(request):
     return render(request,'landing/landing_page.html')
 
 
-# Registration 
-class UserRegisterView(View):
-    def get(self, request):
-        template = "landing/register.html"
-        context={}
-        context['form']= UserRegisterForm()
-        print("context", context)
-        logged_user = request.user  
-        if logged_user.is_authenticated:
-            print(logged_user)
-            print("dashboard__form")
-            return redirect('user_dashboard')  
-        else:
-            print(logged_user)
-            print("login__form")
-            return render(request, template, context)
 
+class UserRegistrationView(CreateView):
+    form_class = CustomUserCreationForm
+    template_name = "landing/register.html"
+    success_url = reverse_lazy('user_dashboard')
     
-    def username_generator(self):
-        import string
-        import random
-        # initializing size of string
-        N = 7
-        # using random.choices()
-        # generating random strings
-        res = ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
-        return res
+
+
+
+# # Registration 
+# class UserRegisterView(View):
+#     def get(self, request):
+#         template = "landing/register.html"
+#         context={}
+#         context['form']= UserRegisterForm()
+#         print("context", context)
+#         logged_user = request.user  
+#         if logged_user.is_authenticated:
+#             print(logged_user)
+#             print("dashboard__form")
+#             return redirect('user_dashboard')  
+#         else:
+#             print(logged_user)
+#             print("login__form")
+#             return render(request, template, context)
     
-    def post(self, request):
-        context={}
-        form = UserRegisterForm(request.POST)
-        context['form']= form
-        template = "landing/register.html"
-        if request.method == "POST":
-            if form.is_valid():
-                user_email = request.POST["user_email"]
-                first_name = request.POST["first_name"]
-                last_name = request.POST["last_name"]
-                username = request.POST["username"]
-                password1 = request.POST["password1"]
+#     def post(self, request):
+#         context={}
+#         form = UserRegisterForm(request.POST)
+#         context['form']= form
+#         template = "landing/register.html"
+#         if request.method == "POST":
+#             if form.is_valid():
+#                 user_email = request.POST["user_email"]
+#                 first_name = request.POST["first_name"]
+#                 last_name = request.POST["last_name"]
+#                 username = request.POST["username"]
+#                 password = request.POST["password"]
                 
-                # user creating here 
-                user = User.objects.create_user(username=username,
-                                            email=user_email,
-                                            password=password1,first_name = first_name,last_name = last_name)
+#                 # user creating here 
+#                 user = User.objects.create_user(username=username,
+#                                             email=user_email,
+#                                             password=password1,first_name = first_name,last_name = last_name)
                 
-                print("user_created")
-                messages.success(request, 'Registration completed Successfully')
-                return render(request, template, context) 
+#                 print("user_created")
+#                 messages.success(request, 'Registration completed Successfully')
+#                 return render(request, template, context) 
             
-            else:
-                print("user not created")
-                messages.error(request, 'Some Error Occured')
-                return render(request, template, context)
+#             else:
+#                 print("user not created")
+#                 messages.error(request, 'Some Error Occured')
+#                 return render(request, template, context)
             
-    def get_username(self):
-        username = self.username
-        return username
+#     def get_username(self):
+#         username = self.username
+#         return username
     
 
 class MemberListView(View):

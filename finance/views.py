@@ -76,7 +76,7 @@ class AddTransaction(CreateView):
         ctx = super(AddTransaction, self).get_context_data(**kwargs)
         breadcrumb = {
             "1":"Finanace Management",
-            "2":"Add Category"
+            "2":"Add Transaction"
         }
         ctx['breadcrumb'] = breadcrumb
         return ctx
@@ -137,6 +137,9 @@ class TransactionList(ListView):
         ctx['breadcrumb'] = breadcrumb
         ctx['headerlist'] = headerlist
         return ctx
+
+
+
 
 
 def export_financial_data(request,**kwargs):
