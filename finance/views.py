@@ -3,12 +3,15 @@ from . models import *
 from django.views.generic.list import ListView
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
-from . forms import BudgetForm, TransactionForm, CategoryForm
+from . forms import BudgetForm, TransactionForm, CategoryForm, FinancialgoalForm
 from django.views import View  
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 import csv
-
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
+from django.contrib import messages
+from django.shortcuts import redirect, render
 
 
 class AddBudget(CreateView):
@@ -17,12 +20,19 @@ class AddBudget(CreateView):
     success_url = '/dashboard'
 
     def form_valid(self, form):
-        form.instance.user = self.request.user 
-        response = super().form_valid(form)
-        form_class = self.get_form_class()  # Get the form class
-        form = form_class()  # Create a new instance of the form
-        self.object = None  # Clear the object reference
-        return response
+        print("pppppp")
+        if form.is_valid():
+            print("pppp----")
+            budget = form.save(commit=False)
+            print("self.request.user.id", self.request.user.id)
+            budget.user = User.objects.get(id=self.request.user.id) 
+            budget.save()
+            response = super().form_valid(form)
+            return response
+        
+        else:
+            print("pppp----pp")
+            return JsonResponse({'message': 'Invalid form data.'}, status=400)
 
     def get_context_data(self, **kwargs):
         ctx = super(AddBudget, self).get_context_data(**kwargs)
@@ -32,6 +42,17 @@ class AddBudget(CreateView):
         }
         ctx['breadcrumb'] = breadcrumb
         return ctx
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Add your custom logic here
+        current_date = date.today()
+        date_check = Budget.objects.filter(user= request.user, end_date__gte=current_date).exists()
+        print("date_check", date_check)
+        if date_check: 
+            messages.warning(request, 'Your can add budget only after the Current Budget End date')
+            return redirect('user_dashboard')  
+        return super().dispatch(request, *args, **kwargs)
+    
 
 
 
@@ -39,12 +60,16 @@ class AddCategory(CreateView):
     form_class =  CategoryForm
     template_name = "finance/addtemplate.html"
     success_url = '/dashboard'
+    
 
     def form_valid(self, form):
+        print("self.request.user.id", self.request.user.id)
+        category = form.save(commit=False)
+        print("self.request.user.id", self.request.user.id)
+        category.user = User.objects.get(id=self.request.user.id) 
+        category.save()
+        messages.success(self.request, 'saved successfully')
         response = super().form_valid(form)
-        form_class = self.get_form_class()  # Get the form class
-        form = form_class()  # Create a new instance of the form
-        self.object = None  # Clear the object reference
         return response
 
     def get_context_data(self, **kwargs):
@@ -65,11 +90,12 @@ class AddTransaction(CreateView):
   
 
     def form_valid(self, form):
-        form.instance.user = self.request.user 
+        transaction = form.save(commit=False)
+        print("self.request.user.id", self.request.user.id)
+        transaction.user = User.objects.get(id=self.request.user.id) 
+        transaction.save()
+        messages.success(self.request, 'saved successfully')
         response = super().form_valid(form)
-        form_class = self.get_form_class()  # Get the form class
-        form = form_class()  # Create a new instance of the form
-        self.object = None  # Clear the object reference
         return response
 
     def get_context_data(self, **kwargs):
@@ -81,11 +107,33 @@ class AddTransaction(CreateView):
         ctx['breadcrumb'] = breadcrumb
         return ctx
 
+class AddFinancialgoal(CreateView):
+    form_class =  FinancialgoalForm
+    template_name = "finance/addtemplate.html"
+    success_url = '/dashboard'
+  
+
+    def form_valid(self, form):
+        financialgoal = form.save(commit=False)
+        print("self.request.user.id", self.request.user.id)
+        financialgoal.user = User.objects.get(id=self.request.user.id) 
+        financialgoal.save()
+        messages.success(self.request, 'saved successfully')
+        response = super().form_valid(form)
+        return response
+
+    def get_context_data(self, **kwargs):
+        ctx = super(AddFinancialgoal, self).get_context_data(**kwargs)
+        breadcrumb = {
+            "1":"Finanace Management",
+            "2":"Add Financialgoal"
+        }
+        ctx['breadcrumb'] = breadcrumb
+        return ctx
+
 
 from django.views.generic.list import ListView
-
- 
-class BudgetList(ListView):
+class BudgetList(LoginRequiredMixin ,ListView):
     # specify the model for list view
     model = Budget
     template_name = "finance/listview.html"
@@ -100,12 +148,18 @@ class BudgetList(ListView):
         ctx['breadcrumb'] = breadcrumb
         ctx['headerlist'] = headerlist
         ctx['actions'] = True
-
-
         return ctx
 
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super().get_queryset()
+        filtered_queryset = queryset.filter(user=user)
+        return filtered_queryset
+    
 
-class CategoryList(ListView):
+
+
+class CategoryList(LoginRequiredMixin ,ListView):
     # specify the model for list view
     model = Category
     template_name = "finance/listview.html"
@@ -116,13 +170,19 @@ class CategoryList(ListView):
             "1":"Finanace Management",
             "2":"Category List"
         }
-        headerlist = ['Category Name', 'description', 'categorytype']
+        headerlist = ['Category Name', 'description','username','category type']
         ctx['breadcrumb'] = breadcrumb
         ctx['headerlist'] = headerlist
         return ctx
 
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super().get_queryset()
+        filtered_queryset = queryset.filter(user=user)
+        return filtered_queryset
 
-class TransactionList(ListView):
+
+class TransactionList(LoginRequiredMixin ,ListView):
     # specify the model for list view
     model = Transaction
     template_name = "finance/listview.html"
@@ -138,14 +198,42 @@ class TransactionList(ListView):
         ctx['headerlist'] = headerlist
         return ctx
 
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super().get_queryset()
+        filtered_queryset = queryset.filter(user=user)
+        return filtered_queryset
 
+
+
+class FinancialGoalList(LoginRequiredMixin ,ListView):
+    # specify the model for list view
+    model = FinancialGoal
+    template_name = "finance/listview.html"
+
+    def get_context_data(self, **kwargs):
+        ctx = super(FinancialGoalList, self).get_context_data(**kwargs)
+        breadcrumb = {
+            "1":"Finanace Management",
+            "2":"FinancialGoal List"
+        }
+        headerlist = [ 'Category', 'Budget', 'Amount','Username', 'Date']
+        ctx['breadcrumb'] = breadcrumb
+        ctx['headerlist'] = headerlist
+        return ctx
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super().get_queryset()
+        filtered_queryset = queryset.filter(user=user)
+        return filtered_queryset
 
 
 
 def export_financial_data(request,**kwargs):
     print("kwargs", kwargs)
     budget_id = kwargs['slug']
-    transcation_mode = kwargs['trans_mode']
+    transaction_mode = kwargs['trans_mode']
     print("budget_id", budget_id)
 
     getBudget = Budget.objects.filter(id=budget_id ).get()
@@ -155,7 +243,7 @@ def export_financial_data(request,**kwargs):
     template = "user/dashboard.html"
     context={}
     # Retrieve the financial data from your models or other data sources
-    financial_data = Transaction.objects.filter(category__categorytype = transcation_mode, budget=getBudget )
+    financial_data = Transaction.objects.filter(category__categorytype = transaction_mode, budget=getBudget )
 
     print("financial_data", financial_data)
 

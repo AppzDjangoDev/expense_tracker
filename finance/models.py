@@ -19,6 +19,7 @@ class Category(models.Model):
         ('income', 'INCOME'),
         ('expense', 'EXPENSE'),
     )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=100)
     categorytype = models.CharField(max_length=20, choices=CHOICES)
@@ -39,9 +40,9 @@ class Transaction(models.Model):
 class FinancialGoal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
-    target_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount_limit = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    achieved_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    achieved_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True)
 
 
 class Alert(models.Model):

@@ -186,7 +186,7 @@
                   </a>
                 </li>
                 <li class="menu-item">
-                  <a href="{% url 'add_transaction' %}" class="menu-link">
+                  <a href="{% url 'add_financialgoal' %}" class="menu-link">
                     <div data-i18n="Connections">Set Finanancial Goal</div>
                   </a>
                 </li>
@@ -196,7 +196,7 @@
             <li class="menu-item">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                <div data-i18n="Account Settings">Manage Finance</div>
+                <div data-i18n="Account Settings">Finance Report</div>
               </a>
               <ul class="menu-sub">
                 <li class="menu-item">
@@ -403,10 +403,7 @@
           {% endif %}
 
           <!-- In html add this to toast message ends -->
-          
-          
           {% block content %}
-
           <div class="content-wrapper">
             <!-- Content -->
             <div class="container-fluid flex-grow-1 container-p-y">
@@ -431,6 +428,9 @@
                           </p>
                           <a href="{% url 'add_budget' %}"  class="btn btn-sm btn-outline-primary">Add Budget</a>
                           {% endif %}
+                          <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
                         </div>
                       </div>
                       <div class="col-sm-5 text-center text-sm-left">
@@ -474,22 +474,21 @@
                                 <i class="bx bx-dots-vertical-rounded"></i>
                               </button>
                               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
-                                <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                                <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                                <a class="dropdown-item" href="{% url 'budget_list' %}">View More</a>
                               </div>
                             </div>
                           </div>
                           {% if current_budget %}
                           <span class="fw-semibold d-block mb-1">Current Budget: {{current_budget.name}}</span>
-                          <h3 class="card-title text-nowrap mb-1">₹ :{{current_budget.total_amount}} </h3>
+                          <h3 class="card-title text-nowrap mb-1">₹ {{current_budget.total_amount}} </h3>
                           <small class="text-primary fw-semibold"></i> {{current_budget.start_date}} : {{current_budget.end_date}}</small>
                           {% elif previous_budget %}
                           <span class="fw-semibold d-block mb-1">Previous Budget: {{previous_budget.name}}</span>
-                          <h3 class="card-title text-nowrap mb-1">₹ :{{previous_budget.total_amount}} </h3>
+                          <h3 class="card-title text-nowrap mb-1">₹ {{previous_budget.total_amount}} </h3>
                           <small class="text-warning fw-semibold"></i> {{previous_budget.start_date}} : {{previous_budget.end_date}}</small>
                           {% else %}
                           <span class="fw-semibold d-block mb-1"> Budget: Not found</span>
-                          <h3 class="card-title text-nowrap mb-1">₹ : 0.00 </h3>
+                          <h3 class="card-title text-nowrap mb-1">₹  0.00 </h3>
                           <small class="text-warning fw-semibold"></i> Date not Found</small>
                           {% endif %}
 
@@ -520,23 +519,22 @@
                               </button>
                               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt6">
                                 <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                                <a class="dropdown-item" href="javascript:void(0);">Delete</a>
                               </div>
                             </div>
                           </div>
                           {% if current_budget and  get_income_data.total_amount %}
-                          <span class="fw-semibold d-block mb-1">Income of {{current_budget.name}}-budget</span>
-                          <h3 class="card-title mb-2">₹: {% if get_income_data %}{{get_income_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
+                          <span class="fw-semibold d-block mb-1">Income of {{current_budget.name}}</span>
+                          <h3 class="card-title mb-2">₹  {% if get_income_data %}{{get_income_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
                           <small class="text-success fw-semibold"> +72.80%</small>
                           {% elif previous_budget  and get_income_data.total_amount %}
                           
                           <span class="fw-semibold d-block mb-1">Income  {{Previous.name}}</span>
-                          <h3 class="card-title mb-2">₹: {% if get_income_data %}{{get_income_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
+                          <h3 class="card-title mb-2">₹  {% if get_income_data %}{{get_income_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
                           <small class="text-success fw-semibold"> +72.80%</small>
                           {% else %}
                           
                           <span class="fw-semibold d-block mb-1">Income  </span>
-                          <h3 class="card-title mb-2">₹: 0.00 </h3>
+                          <h3 class="card-title mb-2">₹  0.00 </h3>
                           <small class="text-success fw-semibold"> No Report Found</small>
                           {% endif %}
                         </div>
@@ -571,18 +569,17 @@
                             </div>
                           </div>
                           {% if current_budget and  get_expense_data.total_amount %}
-                          <span class="fw-semibold d-block mb-1">Expense of {{current_budget.name}}-budget</span>
-                          <h3 class="card-title mb-2">₹: {% if get_expense_data %}{{get_expense_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
+                          <span class="fw-semibold d-block mb-1">Expense of {{current_budget.name}}</span>
+                          <h3 class="card-title mb-2">₹  {% if get_expense_data %}{{get_expense_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
                           <small class="text-success fw-semibold"> +72.80%</small>
                           {% elif previous_budget  and get_expense_data.total_amount %}
                           
                           <span class="fw-semibold d-block mb-1">Expense  {{Previous.name}}</span>
-                          <h3 class="card-title mb-2">₹: {% if get_expense_data %}{{get_expense_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
+                          <h3 class="card-title mb-2">₹  {% if get_expense_data %}{{get_expense_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
                           <small class="text-success fw-semibold"> +72.80%</small>
                           {% else %}
-                          
                           <span class="fw-semibold d-block mb-1">Expense  </span>
-                          <h3 class="card-title mb-2">₹: 0.00 </h3>
+                          <h3 class="card-title mb-2">₹  0.00 </h3>
                           <small class="text-success fw-semibold"> No Report Found</small>
                           {% endif %}
                         </div>
@@ -608,12 +605,11 @@
                               </button>
                               <div class="dropdown-menu" aria-labelledby="cardOpt1">
                                 <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                                <a class="dropdown-item" href="javascript:void(0);">Delete</a>
                               </div>
                             </div>
                           </div>
-                          <span class="fw-semibold d-block mb-1">Transactions</span>
-                          <h3 class="card-title mb-2">₹14,857</h3>
+                          <span class="fw-semibold d-block mb-1">Remaining Amount</span>
+                          <h3 class="card-title mb-2">₹ {{balance_amount_decimal}}</h3>
                           <small class="text-success fw-semibold"> +28.14%</small>
                         </div>
                       </div>
@@ -639,105 +635,28 @@
                         >
                           <i class="bx bx-dots-vertical-rounded"></i>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
-                          <a class="dropdown-item" href="javascript:void(0);">Last 28 Days</a>
-                          <a class="dropdown-item" href="javascript:void(0);">Last Month</a>
-                          <a class="dropdown-item" href="javascript:void(0);">Last Year</a>
-                        </div>
+                        
                       </div>
                     </div>
                     <div class="card-body">
                       <ul class="p-0 m-0">
-                        <li class="d-flex mb-4 pb-1">
-                          <div class="avatar flex-shrink-0 me-3">
-                            <img src="{% static 'assets/img/icons/unicons/paypal.png' %}" alt="User" class="rounded" />
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <small class="text-muted d-block mb-1">Paypal</small>
-                              <h6 class="mb-0">Send money</h6>
-                            </div>
-                            <div class="user-progress d-flex align-items-center gap-1">
-                              <h6 class="mb-0">+82.6</h6>
-                              <span class="text-muted">USD</span>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex mb-4 pb-1">
-                          <div class="avatar flex-shrink-0 me-3">
-                            <img src="{% static 'assets/img/icons/unicons/wallet.png' %}" alt="User" class="rounded" />
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <small class="text-muted d-block mb-1">Wallet</small>
-                              <h6 class="mb-0">Mac'D</h6>
-                            </div>
-                            <div class="user-progress d-flex align-items-center gap-1">
-                              <h6 class="mb-0">+270.69</h6>
-                              <span class="text-muted">USD</span>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex mb-4 pb-1">
-                          <div class="avatar flex-shrink-0 me-3">
-                            <img src="{% static 'assets/img/icons/unicons/chart.png' %}" alt="User" class="rounded" />
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <small class="text-muted d-block mb-1">Transfer</small>
-                              <h6 class="mb-0">Refund</h6>
-                            </div>
-                            <div class="user-progress d-flex align-items-center gap-1">
-                              <h6 class="mb-0">+637.91</h6>
-                              <span class="text-muted">USD</span>
-                            </div>
-                          </div>
-                        </li>
+                        {% for data in income_transactions %}
                         <li class="d-flex mb-4 pb-1">
                           <div class="avatar flex-shrink-0 me-3">
                             <img src="{% static 'assets/img/icons/unicons/cc-success.png' %}" alt="User" class="rounded" />
                           </div>
                           <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                             <div class="me-2">
-                              <small class="text-muted d-block mb-1">Credit Card</small>
-                              <h6 class="mb-0">Ordered Food</h6>
+                              <small class="text-primary  d-block mb-1">{{data.date}}</small>
+                              <h6 class="mb-0">{{data.category}}</h6>
                             </div>
                             <div class="user-progress d-flex align-items-center gap-1">
-                              <h6 class="mb-0">-838.71</h6>
-                              <span class="text-muted">USD</span>
+                              <h6 class="mb-0">{{data.amount}}</h6>
+                              <span class="text-muted">INR</span>
                             </div>
                           </div>
                         </li>
-                        <li class="d-flex mb-4 pb-1">
-                          <div class="avatar flex-shrink-0 me-3">
-                            <img src="{% static 'assets/img/icons/unicons/wallet.png' %}" alt="User" class="rounded" />
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <small class="text-muted d-block mb-1">Wallet</small>
-                              <h6 class="mb-0">Starbucks</h6>
-                            </div>
-                            <div class="user-progress d-flex align-items-center gap-1">
-                              <h6 class="mb-0">+203.33</h6>
-                              <span class="text-muted">USD</span>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex">
-                          <div class="avatar flex-shrink-0 me-3">
-                            <img src="{% static 'assets/img/icons/unicons/cc-warning.png' %}" alt="User" class="rounded" />
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <small class="text-muted d-block mb-1">Mastercard</small>
-                              <h6 class="mb-0">Ordered Food</h6>
-                            </div>
-                            <div class="user-progress d-flex align-items-center gap-1">
-                              <h6 class="mb-0">-92.45</h6>
-                              <span class="text-muted">USD</span>
-                            </div>
-                          </div>
-                        </li>
+                        {% endfor %}
                       </ul>
                     </div>
                   </div>
@@ -761,105 +680,28 @@
                         >
                           <i class="bx bx-dots-vertical-rounded"></i>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
-                          <a class="dropdown-item" href="javascript:void(0);">Last 28 Days</a>
-                          <a class="dropdown-item" href="javascript:void(0);">Last Month</a>
-                          <a class="dropdown-item" href="javascript:void(0);">Last Year</a>
-                        </div>
+                        
                       </div>
                     </div>
                     <div class="card-body">
                       <ul class="p-0 m-0">
+                        {% for data in expense_transactions %}
                         <li class="d-flex mb-4 pb-1">
-                          <div class="avatar flex-shrink-0 me-3">
-                            <img src="{% static 'assets/img/icons/unicons/paypal.png' %}" alt="User" class="rounded" />
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <small class="text-muted d-block mb-1">Paypal</small>
-                              <h6 class="mb-0">Send money</h6>
-                            </div>
-                            <div class="user-progress d-flex align-items-center gap-1">
-                              <h6 class="mb-0">+82.6</h6>
-                              <span class="text-muted">USD</span>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex mb-4 pb-1">
-                          <div class="avatar flex-shrink-0 me-3">
-                            <img src="{% static 'assets/img/icons/unicons/wallet.png' %}" alt="User" class="rounded" />
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <small class="text-muted d-block mb-1">Wallet</small>
-                              <h6 class="mb-0">Mac'D</h6>
-                            </div>
-                            <div class="user-progress d-flex align-items-center gap-1">
-                              <h6 class="mb-0">+270.69</h6>
-                              <span class="text-muted">USD</span>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex mb-4 pb-1">
-                          <div class="avatar flex-shrink-0 me-3">
-                            <img src="{% static 'assets/img/icons/unicons/chart.png' %}" alt="User" class="rounded" />
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <small class="text-muted d-block mb-1">Transfer</small>
-                              <h6 class="mb-0">Refund</h6>
-                            </div>
-                            <div class="user-progress d-flex align-items-center gap-1">
-                              <h6 class="mb-0">+637.91</h6>
-                              <span class="text-muted">USD</span>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex mb-4 pb-1">
-                          <div class="avatar flex-shrink-0 me-3">
-                            <img src="{% static 'assets/img/icons/unicons/cc-success.png' %}" alt="User" class="rounded" />
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <small class="text-muted d-block mb-1">Credit Card</small>
-                              <h6 class="mb-0">Ordered Food</h6>
-                            </div>
-                            <div class="user-progress d-flex align-items-center gap-1">
-                              <h6 class="mb-0">-838.71</h6>
-                              <span class="text-muted">USD</span>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex mb-4 pb-1">
-                          <div class="avatar flex-shrink-0 me-3">
-                            <img src="{% static 'assets/img/icons/unicons/wallet.png' %}" alt="User" class="rounded" />
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <small class="text-muted d-block mb-1">Wallet</small>
-                              <h6 class="mb-0">Starbucks</h6>
-                            </div>
-                            <div class="user-progress d-flex align-items-center gap-1">
-                              <h6 class="mb-0">+203.33</h6>
-                              <span class="text-muted">USD</span>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex">
                           <div class="avatar flex-shrink-0 me-3">
                             <img src="{% static 'assets/img/icons/unicons/cc-warning.png' %}" alt="User" class="rounded" />
                           </div>
                           <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                             <div class="me-2">
-                              <small class="text-muted d-block mb-1">Mastercard</small>
-                              <h6 class="mb-0">Ordered Food</h6>
+                              <small class="text-primary  d-block mb-1">{{data.date}}</small>
+                              <h6 class="mb-0">{{data.category}}</h6>
                             </div>
                             <div class="user-progress d-flex align-items-center gap-1">
-                              <h6 class="mb-0">-92.45</h6>
-                              <span class="text-muted">USD</span>
+                              <h6 class="mb-0">{{data.amount}}</h6>
+                              <span class="text-muted">INR</span>
                             </div>
                           </div>
                         </li>
+                        {% endfor %}
                       </ul>
                     </div>
                   </div>
@@ -868,66 +710,50 @@
 
 
 
-                <!-- Expense Overview -->
-                <div class="col-md-6 col-lg-4 order-3 mb-4">
+               
+                <!-- Transactions -->
+                <div class="col-md-6 col-lg-4 order-2 mb-4">
                   <div class="card h-100">
-                    <div class="card-header">
-                      <ul class="nav nav-pills" role="tablist">
-                        <li class="nav-item">
-                          <button
-                            type="button"
-                            class="nav-link active"
-                            role="tab"
-                            data-bs-toggle="tab"
-                            data-bs-target="#navs-tabs-line-card-income"
-                            aria-controls="navs-tabs-line-card-income"
-                            aria-selected="true"
-                          >
-                            Income
-                          </button>
-                        </li>
-                        <li class="nav-item">
-                          <button type="button" class="nav-link" role="tab">Expenses</button>
-                        </li>
-                        <li class="nav-item">
-                          <button type="button" class="nav-link" role="tab">Profit</button>
-                        </li>
-                      </ul>
-                    </div>
-                    <div class="card-body px-0">
-                      <div class="tab-content p-0">
-                        <div class="tab-pane fade show active" id="navs-tabs-line-card-income" role="tabpanel">
-                          <div class="d-flex p-4 pt-3">
-                            <div class="avatar flex-shrink-0 me-3">
-                              <img src="{% static 'assets/img/icons/unicons/wallet.png' %}" alt="User" />
-                            </div>
-                            <div>
-                              <small class="text-muted d-block">Total Balance</small>
-                              <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">₹459.10</h6>
-                                <small class="text-success fw-semibold">
-                                  <i class="bx bx-chevron-up"></i>
-                                  42.9%
-                                </small>
-                              </div>
-                            </div>
-                          </div>
-                          <div id="incomeChart"></div>
-                          <div class="d-flex justify-content-center pt-4 gap-2">
-                            <div class="flex-shrink-0">
-                              <div id="expensesOfWeek"></div>
-                            </div>
-                            <div>
-                              <p class="mb-n1 mt-1">Expenses This Week</p>
-                              <small class="text-muted">₹39 less than last week</small>
-                            </div>
-                          </div>
-                        </div>
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                      <h5 class="card-title m-0 me-2">Financial Goal</h5>
+                      <div class="dropdown">
+                        <button
+                          class="btn p-0"
+                          type="button"
+                          id="transactionID"
+                          data-bs-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                        >
+                          <i class="bx bx-dots-vertical-rounded"></i>
+                        </button>
+                        
                       </div>
+                    </div>
+                    <div class="card-body">
+                      <ul class="p-0 m-0">
+                        {% for data in goaldata %}
+                        <li class="d-flex mb-4 pb-1">
+                          <div class="avatar flex-shrink-0 me-3">
+                            <img src="{% static 'assets/img/icons/unicons/cc-success.png' %}" alt="User" class="rounded" />
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              {% comment %} <small class="text-primary  d-block mb-1">{{data.date}}</small> {% endcomment %}
+                              <h6 class="mb-0">{{data.category}}</h6>
+                            </div>
+                            <div class="user-progress d-flex align-items-center gap-1">
+                              <h6 class="mb-0">{{data.amount_limit}}</h6>
+                              <span class="text-muted">INR</span>
+                            </div>
+                          </div>
+                        </li>
+                        {% endfor %}
+                      </ul>
                     </div>
                   </div>
                 </div>
-                <!--/ Expense Overview -->
+                <!--/ Transactions -->
 
 
 

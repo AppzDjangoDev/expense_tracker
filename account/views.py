@@ -15,6 +15,9 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from .forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
+from decimal import Decimal
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 # Create your views here.
 class UserloginView(View):
@@ -83,62 +86,11 @@ class UserRegistrationView(CreateView):
         # Authenticate and log in the user
         username = form.cleaned_data['username']
         password = form.cleaned_data['password1']
+        messages.success(self.request, 'Registration completed successfully')
         user = authenticate(username=username, password=password)
+        messages.success(self.request, 'redirected to Dashboard')
         login(self.request, user)
-
         return response
-    
-
-
-
-# # Registration 
-# class UserRegisterView(View):
-#     def get(self, request):
-#         template = "landing/register.html"
-#         context={}
-#         context['form']= UserRegisterForm()
-#         print("context", context)
-#         logged_user = request.user  
-#         if logged_user.is_authenticated:
-#             print(logged_user)
-#             print("dashboard__form")
-#             return redirect('user_dashboard')  
-#         else:
-#             print(logged_user)
-#             print("login__form")
-#             return render(request, template, context)
-    
-#     def post(self, request):
-#         context={}
-#         form = UserRegisterForm(request.POST)
-#         context['form']= form
-#         template = "landing/register.html"
-#         if request.method == "POST":
-#             if form.is_valid():
-#                 user_email = request.POST["user_email"]
-#                 first_name = request.POST["first_name"]
-#                 last_name = request.POST["last_name"]
-#                 username = request.POST["username"]
-#                 password = request.POST["password"]
-                
-#                 # user creating here 
-#                 user = User.objects.create_user(username=username,
-#                                             email=user_email,
-#                                             password=password1,first_name = first_name,last_name = last_name)
-                
-#                 print("user_created")
-#                 messages.success(request, 'Registration completed Successfully')
-#                 return render(request, template, context) 
-            
-#             else:
-#                 print("user not created")
-#                 messages.error(request, 'Some Error Occured')
-#                 return render(request, template, context)
-            
-#     def get_username(self):
-#         username = self.username
-#         return username
-    
 
 class MemberListView(View):
     def get(self, request , **kwargs):
@@ -158,15 +110,16 @@ class SuccessView(View):
         return render(request, template, context)
         
 # @login_required(login_url='/login/')
-class UserDashBoardView(View):
+class UserDashBoardView(LoginRequiredMixin,View):
     def get(self, request):
         template = "user/dashboard.html"
         context={}
+        print("self.request__dashboard", self.request.user.id)
 
         current_datetime = datetime.now()
         # get budget details
         try:
-            current_budget = Budget.objects.filter(end_date__gte=current_datetime).get()
+            current_budget = Budget.objects.filter(end_date__gte=current_datetime, user = self.request.user.id).get()
             if current_budget:
                 modalcontent = {'title': 'Not Allowed to  add budget for Now', 'description': 'You can only add Budget After the Current budget End Date'}
                 context['modalcontent'] = modalcontent
@@ -175,34 +128,61 @@ class UserDashBoardView(View):
                 
         except:
             try:
-                previous_budget = Budget.objects.filter(end_date__gte=current_datetime).get()
+                previous_budget = Budget.objects.filter(end_date__gte=current_datetime, user = self.request.user.id).get()
                 context['previous_budget'] = previous_budget
                 budget = current_budget
             except Budget.DoesNotExist:
                 pass
-    
         try :
-            get_income_data = Transaction.objects.filter(category__categorytype ='income',budget=budget).aggregate(total_amount=Sum('amount'))
+            get_income_data = Transaction.objects.filter(category__categorytype ='income',budget=budget,user = self.request.user.id).aggregate(total_amount=Sum('amount'))
             if get_income_data:
+                # income_total = get_income_data['total_amount']
+                get_income_data['total_amount'] = get_income_data['total_amount'].quantize(Decimal('0.00'))
                 context['get_income_data'] = get_income_data
-
-            get_expense_data = Transaction.objects.filter(category__categorytype ='expense',budget=budget).aggregate(total_amount=Sum('amount'))
+        except:
+            get_income_data['total_amount'] = Decimal(0).quantize(Decimal('0.00'))
+        try :
+            get_expense_data = Transaction.objects.filter(category__categorytype ='expense',budget=budget, user = self.request.user.id).aggregate(total_amount=Sum('amount'))
             if get_expense_data:
+                get_expense_data['total_amount'] = get_expense_data['total_amount'].quantize(Decimal('0.00'))
                 context['get_expense_data'] = get_expense_data
 
-
-
-
-            
-           
-            
         except:
-            pass
+            get_expense_data['total_amount'] = Decimal(0).quantize(Decimal('0.00'))
+
+            
+
+        if get_income_data and get_expense_data:
+            print("get__data")
+            balance_amount = get_income_data['total_amount'] - get_expense_data['total_amount']
+            print("______________________________")
+            print(get_income_data['total_amount'])
+            print(get_expense_data['total_amount'], "1111111", type(balance_amount))
+            balance_amount_decimal = balance_amount.quantize(Decimal('0.00'))
+            print("______________________________", balance_amount_decimal)
+            context['balance_amount_decimal'] = balance_amount_decimal
 
 
 
+        # get table data 
+        income_transactions =  Transaction.objects.filter(category__categorytype='income',  user = self.request.user.id)
+        if income_transactions:
+            context['income_transactions'] = income_transactions
 
 
+        expense_transactions =  Transaction.objects.filter(category__categorytype='expense',  user = self.request.user.id)
+        if expense_transactions:
+            context['expense_transactions'] = expense_transactions
+
+
+        # ------------------------------------------------------------------
+        # goal data and progress
+       
+        goaldata = FinancialGoal.objects.filter(user = self.request.user.id, budget = budget)
+        print("goaldata", type(goaldata))
+        if goaldata:
+            print("goaldata", goaldata.__dict__)
+            context['goaldata'] = goaldata
 
         
 
@@ -210,21 +190,26 @@ class UserDashBoardView(View):
 
 
 
+                
+        
+
+
+
+
+
+        
+
+
+
+
+
         
         
 
         
-        # get_data = self.get_total_transaction_amount()
+        
         print("context", context)
         return render(request, template, context)
-
-
-    # def get_total_transaction_amount(expense_category, start_date, end_date):
-    # total_amount = Transaction.objects.filter(budget__category='income',
-    #                                           budget__start_date__gte=start_date,
-    #                                           budget__end_date__lte=end_date).aggregate(Sum('amount'))
-    # return total_amount['amount__sum']
-    
 
 class ProfileView(View):
     def __init__(self):
