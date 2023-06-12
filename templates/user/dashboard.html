@@ -774,7 +774,7 @@
                         </div>
                         <div class="card-body">
                           {% for data in finance_goals %}
-                          <span class="fw-semibold d-flex mb-1" style="justify-content: space-between;">category : {{data.category}} : {{data.percentage}} %<span class="fw-semibold d-flex mb-1"> Expense / Goal   : {{data.achieved_amount}} / {{data.amount_limit}}</span></span>
+                          <span class="fw-semibold d-flex my-3" style="justify-content: space-between;">category : {{data.category}} : {{data.percentage}} %<span class="fw-semibold d-flex mb-1"> Expense / Goal   : {{data.achieved_amount}} / {{data.amount_limit}}</span></span>
                           <div class="progress">
                             {% if data.percentage > 75 %}
                             <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width: {{data.percentage}}%;" aria-valuenow="{{data.achieved_amount}}" aria-valuemin="0" aria-valuemax="{{data.amount_limit}}"> </div> 

@@ -26,6 +26,8 @@ class Category(models.Model):
 
     def __str__(self):
        	 return self.name
+    
+
 
 
 class Transaction(models.Model):
@@ -35,6 +37,17 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField(default=date.today().strftime('%Y-%m-%d'))
 
+    def save(self, *args, **kwargs):
+        if self.category_id is None:
+            user_id = self.user_id
+            category = Category.objects.filter(user_id=user_id).first()
+            budget = Budget.objects.filter(user_id=user_id).first()
+            if category:
+                self.category = category
+            if budget:
+                self.budget = budget
+        super().save(*args, **kwargs)
+
 
 
 class FinancialGoal(models.Model):
@@ -42,7 +55,19 @@ class FinancialGoal(models.Model):
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
     amount_limit = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    achieved_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    achieved_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def save(self, *args, **kwargs):
+        if self.category_id is None:
+            user_id = self.user_id
+            category = Category.objects.filter(user_id=user_id).first()
+            budget = Budget.objects.filter(user_id=user_id).first()
+            if category:
+                self.category = category
+            if budget:
+                self.budget = budget
+        super().save(*args, **kwargs)
+
 
 
 class Alert(models.Model):

@@ -112,7 +112,7 @@ class AddTransaction(CreateView):
                     print("check_type_____________--", check_type)
                     FinancialGoal.objects.filter(category=transaction.category,budget=transaction.budget,user=self.request.user.id).update(achieved_amount=F('achieved_amount') + transaction.amount)
             print("goal_check", goal_check.__dict__)
-     
+    
         except:
             pass
             
