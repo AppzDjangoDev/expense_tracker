@@ -522,12 +522,12 @@
                           {% if current_budget and  get_income_data.total_amount %}
                           <span class="fw-semibold d-block mb-1">Income of {{current_budget.name}}</span>
                           <h3 class="card-title mb-2">₹  {% if get_income_data %}{{get_income_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
-                          <small class="text-success fw-semibold"> +72.80%</small>
+                          <small class="text-info fw-semibold">INR</small>
                           {% elif previous_budget  and get_income_data.total_amount %}
                           
                           <span class="fw-semibold d-block mb-1">Income  {{Previous.name}}</span>
                           <h3 class="card-title mb-2">₹  {% if get_income_data %}{{get_income_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
-                          <small class="text-success fw-semibold"> +72.80%</small>
+                          <small class="text-info fw-semibold">INR</small>
                           {% else %}
                           
                           <span class="fw-semibold d-block mb-1">Income  </span>
@@ -568,12 +568,12 @@
                           {% if current_budget and  get_expense_data.total_amount %}
                           <span class="fw-semibold d-block mb-1">Expense of {{current_budget.name}}</span>
                           <h3 class="card-title mb-2">₹  {% if get_expense_data %}{{get_expense_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
-                          <small class="text-success fw-semibold"> +72.80%</small>
+                          <small class="text-info fw-semibold">INR</small>
                           {% elif previous_budget  and get_expense_data.total_amount %}
                           
                           <span class="fw-semibold d-block mb-1">Expense  {{Previous.name}}</span>
                           <h3 class="card-title mb-2">₹  {% if get_expense_data %}{{get_expense_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
-                          <small class="text-success fw-semibold"> +72.80%</small>
+                          <small class="text-info fw-semibold">INR</small>
                           {% else %}
                           <span class="fw-semibold d-block mb-1">Expense  </span>
                           <h3 class="card-title mb-2">₹  0.00 </h3>
@@ -607,7 +607,7 @@
                           </div>
                           <span class="fw-semibold d-block mb-1">Remaining Amount</span>
                           <h3 class="card-title mb-2">₹ {{balance_amount_decimal}}</h3>
-                          <small class="text-success fw-semibold"> +28.14%</small>
+                          <small class="text-info fw-semibold"> INR </small>
                         </div>
                       </div>
                     </div>
@@ -756,7 +756,7 @@
                 <!-- banner widget -->
                 <div class="col-lg-12 mb-4 order-0">
                   <div class="card">
-                    <div class="d-flex align-items-end row">
+                    <div class="d-flex row">
                       <div class="col-sm-8">
                         <div class="card-header d-flex align-items-center justify-content-between">
                           <h5 class="card-title m-0 me-2">Expense VS Goal</h5>
@@ -770,12 +770,10 @@
                               aria-expanded="false">
                               <i class="bx bx-dots-vertical-rounded"></i>
                             </button>
-                            
                           </div>
                         </div>
-                        {% for data in finance_goals %}
-                        
                         <div class="card-body">
+                          {% for data in finance_goals %}
                           <span class="fw-semibold d-flex mb-1" style="justify-content: space-between;">category : {{data.category}} : {{data.percentage}} %<span class="fw-semibold d-flex mb-1"> Expense / Goal   : {{data.achieved_amount}} / {{data.amount_limit}}</span></span>
                           <div class="progress">
                             {% if data.percentage > 75 %}
@@ -788,10 +786,8 @@
                             <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: {{data.percentage}}%;" aria-valuenow="{{data.achieved_amount}}" aria-valuemin="0" aria-valuemax="{{data.amount_limit}}"> </div> 
                             {% endif %}
                           </div>
+                          {% endfor %}
                         </div>
-
-                       
-                        {% endfor %}
                       </div>
                       <div class="col-sm-4 text-center text-sm-left">
                         <div class="card-body pb-0 px-0 px-md-4">

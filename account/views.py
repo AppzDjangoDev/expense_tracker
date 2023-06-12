@@ -181,7 +181,7 @@ class UserDashBoardView(LoginRequiredMixin,View):
         # ------------------------------------------------------------------
         # goal data and progress
             from django.db.models import ExpressionWrapper, F
-            finance_goals = FinancialGoal.objects.annotate(percentage=ExpressionWrapper((F('achieved_amount') * 100) / F('amount_limit'), output_field=models.FloatField()))
+            finance_goals = FinancialGoal.objects.filter(user=self.request.user.id, budget=budget).annotate(percentage=ExpressionWrapper((F('achieved_amount') * 100) / F('amount_limit'), output_field=models.FloatField()))
 
             # finance_goals = FinancialGoal.objects.filter(user = self.request.user.id, budget = budget).aggregate(ratio_value=ExpressionWrapper(F('achieved_amount') / F('amount_limit'), output_field=models.FloatField()))['ratio_value']
             print("finance_goals", type(finance_goals))

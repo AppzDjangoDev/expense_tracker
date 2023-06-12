@@ -14,6 +14,9 @@ class CustomUserCreationForm(UserCreationForm):
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['password1'].help_text = None
+        self.fields['password2'].help_text = None
+        self.fields['username'].help_text = None
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control m-2'
 
