@@ -211,6 +211,12 @@ class UserDashBoardView(View):
         return render(request, template, context)
 
 
+    # def get_total_transaction_amount(expense_category, start_date, end_date):
+    # total_amount = Transaction.objects.filter(budget__category='income',
+    #                                           budget__start_date__gte=start_date,
+    #                                           budget__end_date__lte=end_date).aggregate(Sum('amount'))
+    # return total_amount['amount__sum']
+    
 
 class ProfileView(View):
     def __init__(self):
