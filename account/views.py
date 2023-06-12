@@ -14,6 +14,7 @@ from django.db.models import Sum
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from .forms import CustomUserCreationForm
+from django.contrib.auth import authenticate, login
 
 # Create your views here.
 class UserloginView(View):
@@ -75,6 +76,17 @@ class UserRegistrationView(CreateView):
     form_class = CustomUserCreationForm
     template_name = "landing/register.html"
     success_url = reverse_lazy('user_dashboard')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        # Authenticate and log in the user
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password1']
+        user = authenticate(username=username, password=password)
+        login(self.request, user)
+
+        return response
     
 
 
