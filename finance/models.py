@@ -33,13 +33,14 @@ class Transaction(models.Model):
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField(default=date.today().strftime('%Y-%m-%d'))
-    
+
 
 
 class FinancialGoal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
     target_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    target_date = models.DateField()
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     achieved_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
 
