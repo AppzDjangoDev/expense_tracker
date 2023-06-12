@@ -140,6 +140,7 @@ class UserDashBoardView(LoginRequiredMixin,View):
                 get_income_data['total_amount'] = get_income_data['total_amount'].quantize(Decimal('0.00'))
                 context['get_income_data'] = get_income_data
         except:
+            get_income_data = {}
             get_income_data['total_amount'] = Decimal(0).quantize(Decimal('0.00'))
         try :
             get_expense_data = Transaction.objects.filter(category__categorytype ='expense',budget=budget, user = self.request.user.id).aggregate(total_amount=Sum('amount'))
@@ -148,6 +149,7 @@ class UserDashBoardView(LoginRequiredMixin,View):
                 context['get_expense_data'] = get_expense_data
 
         except:
+            get_expense_data = {}
             get_expense_data['total_amount'] = Decimal(0).quantize(Decimal('0.00'))
 
             
@@ -162,27 +164,47 @@ class UserDashBoardView(LoginRequiredMixin,View):
             print("______________________________", balance_amount_decimal)
             context['balance_amount_decimal'] = balance_amount_decimal
 
+        try:
+            # get table data 
+            income_transactions =  Transaction.objects.filter(category__categorytype='income',  user = self.request.user.id, budget=budget)
+            if income_transactions:
+                context['income_transactions'] = income_transactions
 
 
-        # get table data 
-        income_transactions =  Transaction.objects.filter(category__categorytype='income',  user = self.request.user.id)
-        if income_transactions:
-            context['income_transactions'] = income_transactions
+            expense_transactions =  Transaction.objects.filter(category__categorytype='expense',  user = self.request.user.id, budget=budget)
+            if expense_transactions:
+                context['expense_transactions'] = expense_transactions
 
 
-        expense_transactions =  Transaction.objects.filter(category__categorytype='expense',  user = self.request.user.id)
-        if expense_transactions:
-            context['expense_transactions'] = expense_transactions
 
 
         # ------------------------------------------------------------------
         # goal data and progress
-       
-        goaldata = FinancialGoal.objects.filter(user = self.request.user.id, budget = budget)
-        print("goaldata", type(goaldata))
-        if goaldata:
-            print("goaldata", goaldata.__dict__)
-            context['goaldata'] = goaldata
+            from django.db.models import ExpressionWrapper, F
+            finance_goals = FinancialGoal.objects.annotate(percentage=ExpressionWrapper((F('achieved_amount') * 100) / F('amount_limit'), output_field=models.FloatField()))
+
+            # finance_goals = FinancialGoal.objects.filter(user = self.request.user.id, budget = budget).aggregate(ratio_value=ExpressionWrapper(F('achieved_amount') / F('amount_limit'), output_field=models.FloatField()))['ratio_value']
+            print("finance_goals", type(finance_goals))
+            if finance_goals:
+                context['finance_goals'] = finance_goals
+
+
+        # progress_dict = {}
+        
+        # for expdata in expense_transactions:
+        #     print(expdata.category, )
+        #     for gdata in goaldata:
+        #         if expdata.category == gdata.category:
+        #             progress_dict['expense'] : [expdata.category, expdata.amount]
+
+        except: 
+            pass
+
+
+
+        
+
+        
 
         
 

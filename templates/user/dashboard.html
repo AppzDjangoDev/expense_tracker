@@ -77,7 +77,7 @@
 
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo mb-5">
-            <a href="index.html" class="app-brand-link">
+            <a href="#" class="app-brand-link">
               <span class="app-brand-logo demo">
                 <svg
                   width="25"
@@ -428,9 +428,6 @@
                           </p>
                           <a href="{% url 'add_budget' %}"  class="btn btn-sm btn-outline-primary">Add Budget</a>
                           {% endif %}
-                          <div class="progress">
-                            <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
                         </div>
                       </div>
                       <div class="col-sm-5 text-center text-sm-left">
@@ -732,13 +729,14 @@
                     </div>
                     <div class="card-body">
                       <ul class="p-0 m-0">
-                        {% for data in goaldata %}
+                        {% for data in finance_goals %}
                         <li class="d-flex mb-4 pb-1">
                           <div class="avatar flex-shrink-0 me-3">
                             <img src="{% static 'assets/img/icons/unicons/cc-success.png' %}" alt="User" class="rounded" />
                           </div>
                           <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                             <div class="me-2">
+
                               {% comment %} <small class="text-primary  d-block mb-1">{{data.date}}</small> {% endcomment %}
                               <h6 class="mb-0">{{data.category}}</h6>
                             </div>
@@ -754,6 +752,62 @@
                   </div>
                 </div>
                 <!--/ Transactions -->
+
+                <!-- banner widget -->
+                <div class="col-lg-12 mb-4 order-0">
+                  <div class="card">
+                    <div class="d-flex align-items-end row">
+                      <div class="col-sm-8">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                          <h5 class="card-title m-0 me-2">Expense VS Goal</h5>
+                          <div class="dropdown">
+                            <button
+                              class="btn p-0"
+                              type="button"
+                              id="transactionID"
+                              data-bs-toggle="dropdown"
+                              aria-haspopup="true"
+                              aria-expanded="false">
+                              <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            
+                          </div>
+                        </div>
+                        {% for data in finance_goals %}
+                        
+                        <div class="card-body">
+                          <span class="fw-semibold d-flex mb-1" style="justify-content: space-between;">category : {{data.category}} : {{data.percentage}} %<span class="fw-semibold d-flex mb-1"> Expense / Goal   : {{data.achieved_amount}} / {{data.amount_limit}}</span></span>
+                          <div class="progress">
+                            {% if data.percentage > 75 %}
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width: {{data.percentage}}%;" aria-valuenow="{{data.achieved_amount}}" aria-valuemin="0" aria-valuemax="{{data.amount_limit}}"> </div> 
+                            {% elif data.percentage > 50  %}
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width: {{data.percentage}}%;" aria-valuenow="{{data.achieved_amount}}" aria-valuemin="0" aria-valuemax="{{data.amount_limit}}"> </div> 
+                            {% elif data.percentage > 25  %}
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: {{data.percentage}}%;" aria-valuenow="{{data.achieved_amount}}" aria-valuemin="0" aria-valuemax="{{data.amount_limit}}"> </div> 
+                            {% else %}
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: {{data.percentage}}%;" aria-valuenow="{{data.achieved_amount}}" aria-valuemin="0" aria-valuemax="{{data.amount_limit}}"> </div> 
+                            {% endif %}
+                          </div>
+                        </div>
+
+                       
+                        {% endfor %}
+                      </div>
+                      <div class="col-sm-4 text-center text-sm-left">
+                        <div class="card-body pb-0 px-0 px-md-4">
+                          <img
+                            src="{% static 'assets/img/illustrations/man-with-laptop-light.png' %}"
+                            height="250"
+                            alt="View Badge User"
+                            data-app-dark-img="{% static 'illustrations/man-with-laptop-dark.png' %}"
+                            data-app-light-img="{% static 'illustrations/man-with-laptop-light.png' %}"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- banner widget -->
 
 
 

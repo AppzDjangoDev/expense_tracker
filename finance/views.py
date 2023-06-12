@@ -12,6 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.contrib import messages
 from django.shortcuts import redirect, render
+from django.db.models import F
 
 
 class AddBudget(CreateView):
@@ -46,9 +47,9 @@ class AddBudget(CreateView):
     def dispatch(self, request, *args, **kwargs):
         # Add your custom logic here
         current_date = date.today()
-        date_check = Budget.objects.filter(user= request.user, end_date__gte=current_date).exists()
-        print("date_check", date_check)
-        if date_check: 
+        exist_data_check = Budget.objects.filter(user= request.user, end_date__gte=current_date).exists()
+        print("exist_data_check", exist_data_check)
+        if exist_data_check: 
             messages.warning(request, 'Your can add budget only after the Current Budget End date')
             return redirect('user_dashboard')  
         return super().dispatch(request, *args, **kwargs)
@@ -61,10 +62,14 @@ class AddCategory(CreateView):
     template_name = "finance/addtemplate.html"
     success_url = '/dashboard'
     
-
     def form_valid(self, form):
         print("self.request.user.id", self.request.user.id)
         category = form.save(commit=False)
+        exist_data_check = Category.objects.filter(user=self.request.user.id, name = category.name).exists()
+        if exist_data_check:
+            messages.warning(self.request, 'Duplicate Category name')
+            return redirect('user_dashboard') 
+
         print("self.request.user.id", self.request.user.id)
         category.user = User.objects.get(id=self.request.user.id) 
         category.save()
@@ -96,6 +101,24 @@ class AddTransaction(CreateView):
         transaction.save()
         messages.success(self.request, 'saved successfully')
         response = super().form_valid(form)
+        print("transaction__test", transaction.category)
+        # updating_to goal progress amount
+        try :
+            goal_check = FinancialGoal.objects.filter(category=transaction.category,budget=transaction.budget,user=self.request.user.id).get()
+            if goal_check.category:
+                print('goal_check_category', goal_check.category)
+                check_type = Category.objects.filter(name = goal_check.category,categorytype='expense').exists()
+                if check_type:
+                    print("check_type_____________--", check_type)
+                    FinancialGoal.objects.filter(category=transaction.category,budget=transaction.budget,user=self.request.user.id).update(achieved_amount=F('achieved_amount') + transaction.amount)
+            print("goal_check", goal_check.__dict__)
+     
+        except:
+            pass
+            
+
+        
+        
         return response
 
     def get_context_data(self, **kwargs):
@@ -111,16 +134,20 @@ class AddFinancialgoal(CreateView):
     form_class =  FinancialgoalForm
     template_name = "finance/addtemplate.html"
     success_url = '/dashboard'
-  
 
     def form_valid(self, form):
         financialgoal = form.save(commit=False)
         print("self.request.user.id", self.request.user.id)
         financialgoal.user = User.objects.get(id=self.request.user.id) 
-        financialgoal.save()
-        messages.success(self.request, 'saved successfully')
-        response = super().form_valid(form)
-        return response
+        existingcheck = FinancialGoal.objects.filter(budget=financialgoal.budget,category=financialgoal.category ).exists()
+        if existingcheck:
+            messages.warning(self.request, 'Duplicate Entry for the Same Budget')
+            return redirect('user_dashboard')  
+        else:
+            financialgoal.save()
+            messages.success(self.request, 'Saved successfully')
+            response = super().form_valid(form)
+            return response
 
     def get_context_data(self, **kwargs):
         ctx = super(AddFinancialgoal, self).get_context_data(**kwargs)
@@ -254,7 +281,7 @@ def export_financial_data(request,**kwargs):
     # Create a CSV writer
     writer = csv.writer(response)
     print('writer', writer)
-    transaction_mode = transcation_mode.upper()
+    transaction_mode = transaction_mode.upper()
     print('transaction_mode', transaction_mode)
 
     # Write the header row
