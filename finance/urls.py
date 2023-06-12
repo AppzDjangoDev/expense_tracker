@@ -11,6 +11,11 @@ urlpatterns = [
      path('budget-list/', BudgetList.as_view(), name='budget_list'),
      path('category-list/', CategoryList.as_view(), name='category_list'),
      path('transaction-list/', TransactionList.as_view(), name='transaction_list'),
+     path('download-report/<str:trans_mode>/<slug:slug>/',export_financial_data, name='download_report'),
+
+     
+
+     
 
 # managebudget
 

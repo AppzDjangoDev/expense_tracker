@@ -60,6 +60,22 @@
                 {% if object.categorytype %}
                 <td>{{object.categorytype}}</td>
                 {% endif %}
+                {% if actions %}
+                <td>
+                  <div class="dropdown">
+                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                      <i class="bx bx-dots-vertical-rounded"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                      
+                      <a class="dropdown-item" href="{% url 'download_report' trans_mode='income' slug=object.id %}"
+                        ><i class="bx bx-edit-alt me-2"></i>Download Income Report</a >
+                      <a class="dropdown-item" href="{% url 'download_report' trans_mode='expense' slug=object.id %}"
+                        ><i class="bx bx-trash me-2"></i> Download Expense Report</a> 
+                    </div>
+                  </div>
+                </td>
+                {% endif %}
 
 
                 

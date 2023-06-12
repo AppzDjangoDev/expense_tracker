@@ -41,3 +41,4 @@ class TransactionForm(forms.ModelForm):
         for visible in self.visible_fields():
             print("visible", visible.field.widget)
             visible.field.widget.attrs['class'] = 'form-control m-2'
+

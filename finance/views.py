@@ -4,6 +4,11 @@ from django.views.generic.list import ListView
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from . forms import BudgetForm, TransactionForm, CategoryForm
+from django.views import View  
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
+import csv
+
 
 
 class AddBudget(CreateView):
@@ -91,9 +96,12 @@ class BudgetList(ListView):
             "1":"Finanace Management",
             "2":"Budget List"
         }
-        headerlist = ['Budget Name', 'Start Date', 'End Date', 'Username','Limit Amount']
+        headerlist = ['Budget Name', 'Start Date', 'End Date', 'Username','Limit Amount', 'download CSV']
         ctx['breadcrumb'] = breadcrumb
         ctx['headerlist'] = headerlist
+        ctx['actions'] = True
+
+
         return ctx
 
 
@@ -129,3 +137,40 @@ class TransactionList(ListView):
         ctx['breadcrumb'] = breadcrumb
         ctx['headerlist'] = headerlist
         return ctx
+
+
+def export_financial_data(request,**kwargs):
+    print("kwargs", kwargs)
+    budget_id = kwargs['slug']
+    transcation_mode = kwargs['trans_mode']
+    print("budget_id", budget_id)
+
+    getBudget = Budget.objects.filter(id=budget_id ).get()
+
+    print("getBudget", getBudget) 
+
+    template = "user/dashboard.html"
+    context={}
+    # Retrieve the financial data from your models or other data sources
+    financial_data = Transaction.objects.filter(category__categorytype = transcation_mode, budget=getBudget )
+
+    print("financial_data", financial_data)
+
+    # Create the HttpResponse object with CSV mime type
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="financial_data.csv"'
+
+    # Create a CSV writer
+    writer = csv.writer(response)
+    print('writer', writer)
+    transaction_mode = transcation_mode.upper()
+    print('transaction_mode', transaction_mode)
+
+    # Write the header row
+    writer.writerow(['Transaction date', 'Category', 'Amount','Budget', 'transaction_mode' ])  # Replace with your column names
+
+    # Write the data rows
+    for data in financial_data:
+        writer.writerow([data.date, data.category, data.amount, data.budget, transaction_mode ])  # Replace with your field names
+
+    return response

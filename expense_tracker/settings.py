@@ -162,13 +162,7 @@ AUTH_USER_MODEL = 'account.User'
 # massages
 from django.contrib.messages import constants as messages
 
-# MESSAGE_TAGS = {
-#         messages.DEBUG: 'secondary',
-#         messages.INFO: 'info',
-#         messages.SUCCESS: 'success',
-#         messages.WARNING: 'warning',
-#         messages.ERROR: 'danger',
-#  }
+
 
 DATE_INPUT_FORMATS = [
     '%Y-%m-%d',  # Default format

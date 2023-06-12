@@ -162,7 +162,7 @@
                 <div data-i18n="Account Settings">Set Financial goals</div>
               </a>
               <ul class="menu-sub">
-                {% if modalcontent %}
+                {% if not current_budget %}
                 <li class="menu-item">
                   <a href="{% url 'add_budget' %}"  class="menu-link">
                     <div data-i18n="Account">Add Budget</div>
@@ -411,11 +411,19 @@
                     <div class="d-flex align-items-end row">
                       <div class="col-sm-7">
                         <div class="card-body">
-                          <h5 class="card-title text-primary">Congratulations {{request.user.first_name}} ! 🎉</h5>
+                          {% if  current_budget  %}
+                          <h5 class="card-title text-primary">Hi {{request.user.first_name}} ! Welocme to Expense Tracker 🎉</h5>
                           <p class="mb-4">
-                            You have done <span class="fw-bold">72%</span> more sales today. Check your new badge in
-                            your profile.
+                             Your Budget is Upto Date <span class="fw-bold"></span> 
                           </p>
+
+                          {% else %}
+                          <h5 class="card-title text-primary">Hi {{request.user.first_name}} ! Welocme to Expense Tracker 🎉</h5>
+                          <p class="mb-4">
+                             Your Budget is Outdated <span class="fw-bold"></span> Please Add new Budget 
+                          </p>
+
+                          {% endif %}
 
                           <a href="javascript:;" class="btn btn-sm btn-outline-primary">View Badges</a>
                         </div>
@@ -426,8 +434,8 @@
                             src="{% static 'assets/img/illustrations/man-with-laptop-light.png' %}"
                             height="140"
                             alt="View Badge User"
-                            data-app-dark-img="illustrations/man-with-laptop-dark.png' %}"
-                            data-app-light-img="illustrations/man-with-laptop-light.png' %}"
+                            data-app-dark-img="{% static 'illustrations/man-with-laptop-dark.png' %}"
+                            data-app-light-img="{% static 'illustrations/man-with-laptop-light.png' %}"
                           />
                         </div>
                       </div>
@@ -464,14 +472,21 @@
                               </div>
                             </div>
                           </div>
-                          {% if current_budget %}
+                          {% if current_budget and  get_income_data.total_amount %}
+                          
                           <span class="fw-semibold d-block mb-1">Income of {{current_budget.name}}-budget</span>
-                          <h3 class="card-title mb-2">$12,628</h3>
+                          <h3 class="card-title mb-2">INR: {% if get_income_data %}{{get_income_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
                           <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
-                          {% elif previous_budget %}
+                          {% elif previous_budget  and get_income_data.total_amount %}
+                          
                           <span class="fw-semibold d-block mb-1">Income of budget : {{Previous.name}}</span>
-                          <h3 class="card-title mb-2">$12,628</h3>
+                          <h3 class="card-title mb-2">INR: {% if get_income_data %}{{get_income_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
                           <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
+                          {% else %}
+                          
+                          <span class="fw-semibold d-block mb-1">Income of budget : - </span>
+                          <h3 class="card-title mb-2">INR: 0.00 </h3>
+                          <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> No Report Found</small>
                           {% endif %}
                         </div>
                       </div>
@@ -504,13 +519,19 @@
                               </div>
                             </div>
                           </div>
-                          <span class="fw-semibold d-block mb-1">{% if current_budget %}Current Budget : {% else %} Previous Budget:{% endif %} {{current_budget.name}}</span>
+                          
                           {% if current_budget %}
-                          <h4 class="card-title text-nowrap mb-1">INR :{{current_budget.total_amount}} </h4>
+                          <span class="fw-semibold d-block mb-1">Current Budget: {{current_budget.name}}</span>
+                          <h3 class="card-title text-nowrap mb-1">INR :{{current_budget.total_amount}} </h3>
                           <small class="text-primary fw-semibold"></i> {{current_budget.start_date}} : {{current_budget.end_date}}</small>
                           {% elif previous_budget %}
-                          <h4 class="card-title text-nowrap mb-1">INR :{{previous_budget.total_amount}} </h4>
-                          <small class="text-primary fw-semibold"></i> {{previous_budget.start_date}} : {{previous_budget.end_date}}</small>
+                          <span class="fw-semibold d-block mb-1">Previous Budget: {{previous_budget.name}}</span>
+                          <h3 class="card-title text-nowrap mb-1">INR :{{previous_budget.total_amount}} </h3>
+                          <small class="text-warning fw-semibold"></i> {{previous_budget.start_date}} : {{previous_budget.end_date}}</small>
+                          {% else %}
+                          <span class="fw-semibold d-block mb-1"> Budget: "Not found"</span>
+                          <h3 class="card-title text-nowrap mb-1">INR : 0.00 </h3>
+                          <small class="text-warning fw-semibold"></i> Date not Found</small>
                           {% endif %}
                         </div>
                       </div>
@@ -601,14 +622,20 @@
                               </div>
                             </div>
                           </div>
-                          {% if current_budget %}
+                          {% if current_budget and  get_expense_data.total_amount %}
                           <span class="fw-semibold d-block mb-1">Expense of {{current_budget.name}}-budget</span>
-                          <h3 class="card-title mb-2">$12,628</h3>
+                          <h3 class="card-title mb-2">INR: {% if get_expense_data %}{{get_expense_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
                           <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
-                          {% elif previous_budget %}
+                          {% elif previous_budget  and get_expense_data.total_amount %}
+                          
                           <span class="fw-semibold d-block mb-1">Expense of budget : {{Previous.name}}</span>
-                          <h3 class="card-title mb-2">$12,628</h3>
+                          <h3 class="card-title mb-2">INR: {% if get_expense_data %}{{get_expense_data.total_amount}}{% else %} 0.00 {% endif %}</h3>
                           <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
+                          {% else %}
+                          
+                          <span class="fw-semibold d-block mb-1">Expense of budget : - </span>
+                          <h3 class="card-title mb-2">INR: 0.00 </h3>
+                          <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> No Report Found</small>
                           {% endif %}
                         </div>
                       </div>

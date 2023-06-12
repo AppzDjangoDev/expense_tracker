@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.views.generic.list import ListView
 from datetime import datetime
+from django.db.models import Sum
+
 
 
 
@@ -170,11 +172,24 @@ class UserDashBoardView(View):
                 budget = current_budget
             except Budget.DoesNotExist:
                 pass
+    
+        try :
+            get_income_data = Transaction.objects.filter(category__categorytype ='income',budget=budget).aggregate(total_amount=Sum('amount'))
+            if get_income_data:
+                context['get_income_data'] = get_income_data
 
-        # try :
-        #     get_income_data = Transaction.objects.filter(budget=budget).get()
+            get_expense_data = Transaction.objects.filter(category__categorytype ='expense',budget=budget).aggregate(total_amount=Sum('amount'))
+            if get_expense_data:
+                context['get_expense_data'] = get_expense_data
+
+
+
+
             
-        # except:
+           
+            
+        except:
+            pass
 
 
 
@@ -196,12 +211,6 @@ class UserDashBoardView(View):
         return render(request, template, context)
 
 
-    # def get_total_transaction_amount(expense_category, start_date, end_date):
-    # total_amount = Transaction.objects.filter(budget__category='income',
-    #                                           budget__start_date__gte=start_date,
-    #                                           budget__end_date__lte=end_date).aggregate(Sum('amount'))
-    # return total_amount['amount__sum']
-    
 
 class ProfileView(View):
     def __init__(self):
