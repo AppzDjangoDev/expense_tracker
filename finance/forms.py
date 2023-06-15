@@ -50,11 +50,16 @@ class TransactionForm(forms.ModelForm):
         widgets = { 'user': forms.HiddenInput(), }
        
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self,*args, **kwargs):
+        username = kwargs.pop('user')
         super(TransactionForm, self).__init__(*args, **kwargs)
+        if 'initial' in kwargs:
+            self.fields['category'].queryset = Category.objects.filter(user=username)
+            self.fields['budget'].queryset = Budget.objects.filter(user=username)
         for visible in self.visible_fields():
             print("visible", visible.field.widget)
             visible.field.widget.attrs['class'] = 'form-control m-2'
+            
 
 
 class FinancialgoalForm(forms.ModelForm):
@@ -65,8 +70,11 @@ class FinancialgoalForm(forms.ModelForm):
        
 
     def __init__(self, *args, **kwargs):
+        username = kwargs.pop('user')
         super(FinancialgoalForm, self).__init__(*args, **kwargs)
-        
+        if 'initial' in kwargs:
+            self.fields['category'].queryset = Category.objects.filter(user=username)
+            self.fields['budget'].queryset = Budget.objects.filter(user=username)
         for visible in self.visible_fields():
             print("visible", visible.field.widget)
             visible.field.widget.attrs['class'] = 'form-control m-2'

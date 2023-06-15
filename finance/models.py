@@ -49,6 +49,8 @@ class Transaction(models.Model):
         super().save(*args, **kwargs)
 
 
+# limit_choices_to={"is_staff": True}
+
 
 class FinancialGoal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

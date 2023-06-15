@@ -92,6 +92,13 @@ class AddTransaction(CreateView):
     form_class =  TransactionForm
     template_name = "finance/addtemplate.html"
     success_url = '/dashboard'
+    
+    # passing the user instance for filtering the user vice category and budget dispaly 
+    def get_form_kwargs(self):
+        kwargs = super(AddTransaction, self).get_form_kwargs()
+        {'user': self.request.user}
+        kwargs.update({'user': self.request.user})
+        return kwargs
   
 
     def form_valid(self, form):
@@ -115,10 +122,7 @@ class AddTransaction(CreateView):
     
         except:
             pass
-            
-
-        
-        
+                    
         return response
 
     def get_context_data(self, **kwargs):
@@ -134,6 +138,13 @@ class AddFinancialgoal(CreateView):
     form_class =  FinancialgoalForm
     template_name = "finance/addtemplate.html"
     success_url = '/dashboard'
+
+    def get_form_kwargs(self):
+        # passing the user instance for filtering the user vice category and budget dispaly 
+        kwargs = super(AddFinancialgoal, self).get_form_kwargs()
+        {'user': self.request.user}
+        kwargs.update({'user': self.request.user})
+        return kwargs
 
     def form_valid(self, form):
         financialgoal = form.save(commit=False)
