@@ -477,7 +477,7 @@
                           </div>
                           {% if current_budget %}
                           <span class="fw-semibold d-block mb-1">Current Budget: {{current_budget.name}}</span>
-                          <h3 class="card-title text-nowrap mb-1">₹ {{current_budget.total_amount}} </h3>
+                          <span class="d-flex"><h3 class="card-title text-nowrap mb-1 mr-2">₹ {{current_budget.total_amount}}</h3>&nbsp(Expected Budget)</span>
                           <small class="text-primary fw-semibold"></i> {{current_budget.start_date}} : {{current_budget.end_date}}</small>
                           {% elif previous_budget %}
                           <span class="fw-semibold d-block mb-1">Previous Budget: {{previous_budget.name}}</span>
