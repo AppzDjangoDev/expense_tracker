@@ -37,19 +37,6 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField(default=date.today().strftime('%Y-%m-%d'))
 
-    def save(self, *args, **kwargs):
-        if self.category_id is None:
-            user_id = self.user_id
-            category = Category.objects.filter(user_id=user_id).first()
-            budget = Budget.objects.filter(user_id=user_id).first()
-            if category:
-                self.category = category
-            if budget:
-                self.budget = budget
-        super().save(*args, **kwargs)
-
-
-# limit_choices_to={"is_staff": True}
 
 
 class FinancialGoal(models.Model):
@@ -58,17 +45,6 @@ class FinancialGoal(models.Model):
     amount_limit = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     achieved_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-
-    def save(self, *args, **kwargs):
-        if self.category_id is None:
-            user_id = self.user_id
-            category = Category.objects.filter(user_id=user_id).first()
-            budget = Budget.objects.filter(user_id=user_id).first()
-            if category:
-                self.category = category
-            if budget:
-                self.budget = budget
-        super().save(*args, **kwargs)
 
 
 

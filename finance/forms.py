@@ -73,7 +73,7 @@ class FinancialgoalForm(forms.ModelForm):
         username = kwargs.pop('user')
         super(FinancialgoalForm, self).__init__(*args, **kwargs)
         if 'initial' in kwargs:
-            self.fields['category'].queryset = Category.objects.filter(user=username)
+            self.fields['category'].queryset = Category.objects.filter(user=username,categorytype='expense')
             self.fields['budget'].queryset = Budget.objects.filter(user=username)
         for visible in self.visible_fields():
             print("visible", visible.field.widget)
