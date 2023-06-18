@@ -55,8 +55,6 @@ class AddBudget(CreateView):
         return super().dispatch(request, *args, **kwargs)
     
 
-
-
 class AddCategory(CreateView):
     form_class =  CategoryForm
     template_name = "finance/addtemplate.html"
@@ -113,11 +111,12 @@ class AddTransaction(CreateView):
         try :
             goal_check = FinancialGoal.objects.filter(category=transaction.category,budget=transaction.budget,user=self.request.user.id).get()
             if goal_check.category:
-                print('goal_check_category', goal_check.category)
-                check_type = Category.objects.filter(name = goal_check.category,categorytype='expense').exists()
-                if check_type:
-                    print("check_type_____________--", check_type)
-                    FinancialGoal.objects.filter(category=transaction.category,budget=transaction.budget,user=self.request.user.id).update(achieved_amount=F('achieved_amount') + transaction.amount)
+                # print('goal_check_category', goal_check.category)
+                # check_type = Category.objects.filter(name = goal_check.category,categorytype='expense').exists()
+                # if check_type:
+                #     print("check_type_____________--", check_type)
+                FinancialGoal.objects.filter(category=transaction.category,budget=transaction.budget,user=self.request.user.id).update(achieved_amount=F('achieved_amount') + transaction.amount)
+            
             print("goal_check", goal_check.__dict__)
     
         except:
