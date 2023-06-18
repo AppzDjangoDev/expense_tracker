@@ -12,3 +12,4 @@ psycopg2-binary==2.9.6
 pydantic==1.10.9
 sqlparse==0.4.4
 typing_extensions==4.6.3
+gunicorn==19.7.1
